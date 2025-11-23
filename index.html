@@ -161,6 +161,63 @@
             background: var(--bg-tertiary); border: 1px solid #202225; color: white; border-radius: 4px; outline: none;
         }
 
+        /* === USER SETTINGS MODAL === */
+        .user-settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+        .user-settings-content {
+            background: var(--bg-primary);
+            padding: 20px;
+            border-radius: 8px;
+            width: 350px;
+            max-width: 90%;
+        }
+        .avatar-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 10px auto;
+            background: var(--brand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            overflow: hidden;
+        }
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* === VOLUME CONTROLS === */
+        .volume-control {
+            display: none;
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-tertiary);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+        .volume-slider {
+            width: 100px;
+            margin: 5px 0;
+        }
+
         /* === LAYOUT === */
         .server-sidebar { width: 72px; background: var(--bg-tertiary); display: flex; flex-direction: column; align-items: center; padding-top: 12px; gap: 10px; z-index: 5; }
         .server-icon {
@@ -212,7 +269,9 @@
             color: var(--text-normal); 
             opacity: 0.9;
             min-width: 0;
+            position: relative;
         }
+        .voice-user:hover .volume-control { display: block; }
         .voice-user-info {
             display: flex;
             align-items: center;
@@ -249,7 +308,26 @@
             gap: 8px; 
             min-height: 52px;
         }
-        .my-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--brand); position: relative; flex-shrink: 0; }
+        .my-avatar { 
+            width: 32px; 
+            height: 32px; 
+            border-radius: 50%; 
+            background: var(--brand); 
+            position: relative; 
+            flex-shrink: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: white;
+            overflow: hidden;
+        }
+        .my-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
         .status-dot { width: 10px; height: 10px; background: var(--success); border-radius: 50%; position: absolute; bottom: -2px; right: -2px; border: 2px solid #292b2f; }
         .user-info-col { 
             flex: 1; 
@@ -264,11 +342,11 @@
         
         .panel-icons { 
             display: flex; 
-            gap: 2px; /* Reduced gap */
+            gap: 2px;
             flex-shrink: 0;
         }
         .panel-btn { 
-            width: 28px; /* Smaller buttons */
+            width: 28px;
             height: 28px; 
             display: flex; 
             justify-content: center; 
@@ -290,7 +368,24 @@
         
         .message { display: flex; gap: 15px; position: relative; }
         .message:hover .delete-btn { display: block; }
-        .msg-avatar { width: 40px; height: 40px; border-radius: 50%; background: gray; flex-shrink: 0; }
+        .msg-avatar { 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            background: gray; 
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: white;
+            overflow: hidden;
+        }
+        .msg-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
         .msg-header { color: white; font-weight: 500; margin-bottom: 2px; }
         .msg-time { font-size: 11px; color: var(--text-muted); font-weight: normal; margin-left: 5px; }
         .msg-content { color: var(--text-normal); word-break: break-word; line-height: 1.4; }
@@ -371,14 +466,16 @@
     <audio id="sfx-user-join" src="data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAAABmYWN0BAAAAAAAAABkYXRhAAAAAA=="></audio>
     <audio id="sfx-user-leave" src="data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAAABmYWN0BAAAAAAAAABkYXRhAAAAAA=="></audio>
 
+    <!-- Nick Modal -->
     <div class="modal-overlay" id="nick-modal">
         <div class="modal-box">
             <h2>Welcome to P2P MAX ULTIMATE v2.5</h2>
-            <input type="text" id="nick-input" class="modal-input" placeholder="Your Nickname" maxlength="15">
+            <input type="text" id="nick-input" class="modal-input" placeholder="Your Nickname" maxlength="20">
             <button class="btn btn-brand" onclick="submitNick()">Continue</button>
         </div>
     </div>
 
+    <!-- Server Modal -->
     <div class="modal-overlay" id="server-modal" style="display: none;">
         <div class="modal-box">
             <h2>Server Connection</h2>
@@ -386,6 +483,34 @@
             <button class="btn btn-success" onclick="handleServer(true)">Create Server</button>
             <button class="btn btn-brand" onclick="handleServer(false)">Join Server</button>
             <button class="btn btn-danger" onclick="closeServerModal()" style="margin-top: 20px;">Cancel</button>
+        </div>
+    </div>
+
+    <!-- User Settings Modal -->
+    <div class="user-settings-modal" id="user-settings-modal">
+        <div class="user-settings-content">
+            <h2>User Settings</h2>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Change Nickname:</label>
+                <input type="text" id="change-nick-input" class="modal-input" placeholder="New Nickname" maxlength="20" value="">
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Change Avatar:</label>
+                <div class="avatar-preview" id="avatar-preview">
+                    <!-- Avatar will be shown here -->
+                </div>
+                <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+                <button class="btn btn-brand" onclick="document.getElementById('avatar-input').click()" style="width: 100%; margin-top: 5px;">
+                    Choose Avatar
+                </button>
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-success" onclick="saveUserSettings()" style="flex: 1;">Save</button>
+                <button class="btn btn-danger" onclick="closeUserSettings()" style="flex: 1;">Cancel</button>
+            </div>
         </div>
     </div>
 
@@ -412,7 +537,9 @@
             </div>
 
             <div class="user-panel">
-                <div class="my-avatar"><div class="status-dot"></div></div>
+                <div class="my-avatar" id="my-avatar" onclick="openUserSettings()">
+                    <!-- Avatar will be shown here -->
+                </div>
                 <div class="user-info-col">
                     <div style="font-weight: bold; font-size: 13px; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="my-nick-ui">...</div>
                     <div class="ping-display">Ping: <span id="ping-ms">0</span>ms</div>
@@ -472,7 +599,7 @@
         // --- VARIABLES ---
         let peer, myId, myNick, hostId, isHost = false;
         let connections = {};
-        let peersData = {}; // { id: { nick, inVoice, isSharing, isMuted, isDeaf, ping } }
+        let peersData = {}; // { id: { nick, inVoice, isSharing, isMuted, isDeaf, ping, avatar } }
         
         let currentChannel = 'general';
         let chatHistory = { general: [], memes: [] };
@@ -489,6 +616,10 @@
         
         // Server lock
         let isServerLocked = false;
+
+        // User settings
+        let userAvatar = null;
+        let userVolumes = {}; // Store volume levels for each user
 
         // --- STYLE LOGIC ---
         function toggleStyleMenu() {
@@ -527,6 +658,110 @@
             }
         }
 
+        // --- USER SETTINGS ---
+        function openUserSettings() {
+            document.getElementById('change-nick-input').value = myNick;
+            updateAvatarPreview();
+            document.getElementById('user-settings-modal').style.display = 'flex';
+        }
+
+        function closeUserSettings() {
+            document.getElementById('user-settings-modal').style.display = 'none';
+        }
+
+        function saveUserSettings() {
+            const newNick = document.getElementById('change-nick-input').value.trim();
+            if(newNick && newNick !== myNick) {
+                myNick = newNick;
+                document.getElementById('my-nick-ui').innerText = myNick;
+                
+                // Update in peersData
+                if(peersData[myId]) {
+                    peersData[myId].nick = myNick;
+                }
+                
+                // Broadcast nickname change
+                sendNicknameChange();
+                addSysMsg(`You changed your nickname to ${myNick}`);
+            }
+            
+            closeUserSettings();
+        }
+
+        function sendNicknameChange() {
+            const msg = {
+                type: 'nickname-change',
+                id: myId,
+                nick: myNick,
+                avatar: userAvatar
+            };
+            
+            if(isHost) {
+                broadcastSync();
+            } else if(connections[hostId]) {
+                connections[hostId].send(msg);
+            }
+        }
+
+        function updateAvatarPreview() {
+            const preview = document.getElementById('avatar-preview');
+            const myAvatar = document.getElementById('my-avatar');
+            
+            if(userAvatar) {
+                preview.innerHTML = `<img src="${userAvatar}" alt="Avatar">`;
+                myAvatar.innerHTML = `<img src="${userAvatar}" alt="Avatar">`;
+            } else {
+                preview.innerHTML = myNick.charAt(0).toUpperCase();
+                myAvatar.innerHTML = myNick.charAt(0).toUpperCase();
+            }
+        }
+
+        // Handle avatar file input
+        document.getElementById('avatar-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if(!file || !file.type.startsWith('image/')) return;
+            
+            if(file.size > 5000000) {
+                alert("Avatar file too large (>5MB)");
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                userAvatar = e.target.result;
+                updateAvatarPreview();
+                
+                // Update in peersData
+                if(peersData[myId]) {
+                    peersData[myId].avatar = userAvatar;
+                }
+                
+                // Broadcast avatar change
+                sendNicknameChange();
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // --- VOLUME CONTROL ---
+        function setUserVolume(pid, volume) {
+            userVolumes[pid] = volume;
+            const video = document.getElementById('vid-' + pid);
+            if(video) {
+                video.volume = volume / 100;
+            }
+        }
+
+        function createVolumeControl(pid) {
+            return `
+                <div class="volume-control">
+                    <div style="font-size: 12px; margin-bottom: 5px;">Volume</div>
+                    <input type="range" class="volume-slider" min="0" max="300" value="${userVolumes[pid] || 100}" 
+                           oninput="setUserVolume('${pid}', this.value)">
+                    <div style="font-size: 10px; text-align: center;">${userVolumes[pid] || 100}%</div>
+                </div>
+            `;
+        }
+
         // --- INITIALIZATION ---
         function submitNick() {
             const val = document.getElementById('nick-input').value.trim();
@@ -534,6 +769,9 @@
             myNick = val;
             document.getElementById('my-nick-ui').innerText = myNick;
             document.getElementById('nick-modal').style.display = 'none';
+            
+            // Initialize avatar
+            updateAvatarPreview();
             
             const emojis = ["😀","😂","😍","😎","😭","😡","👍","👎","🔥","💩","❤️","🤡","👻","💀","👀"];
             const p = document.getElementById('emoji-picker');
@@ -551,7 +789,9 @@
         function handleServer(create) {
             const rawName = document.getElementById('server-input').value.trim();
             if(!rawName) return;
-            const roomId = "room-" + btoa(unescape(encodeURIComponent(rawName))).replace(/[^a-zA-Z0-9]/g, '').substr(0, 24);
+            
+            // Encode server name properly for UTF-8 support
+            const roomId = "room-" + btoa(encodeURIComponent(rawName)).replace(/[^a-zA-Z0-9]/g, '').substr(0, 24);
 
             if(peer) peer.destroy();
             isHost = create;
@@ -569,7 +809,8 @@
                     isSharing: false, 
                     isMuted: false,
                     isDeaf: false,
-                    ping: 0
+                    ping: 0,
+                    avatar: userAvatar
                 };
                 
                 if(!isHost) {
@@ -634,7 +875,12 @@
                 return;
             }
             
-            const conn = peer.connect(hostId, { metadata: { nick: myNick } });
+            const conn = peer.connect(hostId, { 
+                metadata: { 
+                    nick: myNick,
+                    avatar: userAvatar
+                } 
+            });
             handleConn(conn);
             conn.on('close', () => {
                 if(conn.peer === hostId) {
@@ -739,7 +985,8 @@
                         isSharing: false, 
                         isMuted: false,
                         isDeaf: false,
-                        ping: 0
+                        ping: 0,
+                        avatar: conn.metadata.avatar || null
                     };
                     broadcastSync();
                     relayChat({ type: 'chat', channel: 'general', text: `${peersData[conn.peer].nick} joined.`, isSys: true, id: Date.now() });
@@ -817,6 +1064,17 @@
                     if(data.type === 'server-lock') {
                         isServerLocked = data.locked;
                         updateServerLockUI();
+                    }
+                    if(data.type === 'nickname-change') {
+                        if(peersData[data.id]) {
+                            peersData[data.id].nick = data.nick;
+                            peersData[data.id].avatar = data.avatar;
+                            if(isHost) broadcastSync();
+                            updateUI();
+                            if(data.id !== myId) {
+                                addSysMsg(`${peersData[data.id].nick} changed their nickname`);
+                            }
+                        }
                     }
                 } catch (error) {
                     console.error('Error processing data:', error);
@@ -912,8 +1170,13 @@
                     else content += `<a href="${msg.file}" download="${msg.fname}" style="color:#00b0f4;display:block;margin-top:5px;">Download ${msg.fname}</a>`;
                 }
                 const deleteBtn = (msg.sender === myId) ? `<div class="delete-btn" onclick="requestDelete('${msg.id}', '${msg.channel}')"><i class="fas fa-trash"></i></div>` : '';
+                
+                const avatarContent = peersData[msg.sender] && peersData[msg.sender].avatar 
+                    ? `<img src="${peersData[msg.sender].avatar}" alt="Avatar">`
+                    : (msg.nick ? msg.nick.charAt(0).toUpperCase() : '?');
+                
                 div.innerHTML = `
-                    <div class="msg-avatar" style="background:${msg.sender===myId?'var(--brand)':'gray'}"></div>
+                    <div class="msg-avatar" style="background:${msg.sender===myId?'var(--brand)':'gray'}">${avatarContent}</div>
                     <div style="flex:1;">
                         <div class="msg-header">${msg.nick} <span class="msg-time">${new Date(msg.time).toLocaleTimeString()}</span></div>
                         ${content}
@@ -980,7 +1243,11 @@
         
         function sendFile(f) {
             if(!f) return;
-            if(f.size > 1000000) return alert("File too large (>1MB)");
+            // Increased file size limit to 10MB
+            if(f.size > 10000000) {
+                alert("File too large (>10MB)");
+                return;
+            }
             
             const r = new FileReader();
             r.onload = (e) => {
@@ -1015,7 +1282,15 @@
         async function toggleVoice() {
             if(!localStream) {
                 try {
-                    localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                    // Enable noise suppression
+                    localStream = await navigator.mediaDevices.getUserMedia({ 
+                        audio: { 
+                            echoCancellation: true,
+                            noiseSuppression: true,
+                            autoGainControl: true
+                        }, 
+                        video: false 
+                    });
                     document.getElementById('local-video').srcObject = localStream;
                     document.getElementById('disconnect-btn').style.display = 'flex';
                     playSound('join');
@@ -1115,6 +1390,8 @@
                     const videoEl = document.getElementById('vid-'+call.peer);
                     if(videoEl) videoEl.muted = true;
                 }
+                // Set initial volume
+                setUserVolume(call.peer, userVolumes[call.peer] || 100);
             });
             
             call.on('close', () => {
@@ -1262,35 +1539,41 @@
             vl.innerHTML = '';
             
             Object.keys(peersData).forEach(pid => {
+                const userData = peersData[pid];
+                const avatarContent = userData.avatar 
+                    ? `<img src="${userData.avatar}" alt="Avatar">`
+                    : (userData.nick ? userData.nick.charAt(0).toUpperCase() : '?');
+                
                 // Members list
                 const d = document.createElement('div'); 
                 d.className = 'member-card';
                 d.innerHTML = `
-                    <div class="my-avatar" style="width:24px;height:24px;background:${pid===myId?'var(--brand)':'gray'}"></div>
-                    <div class="member-name" style="color:${pid===hostId?'#ed4245':'#dcddde'};font-weight:500;">${peersData[pid].nick}</div>
-                    <div class="member-ping">${peersData[pid].ping}ms</div>
+                    <div class="my-avatar" style="width:24px;height:24px;background:${pid===myId?'var(--brand)':'gray'}">${avatarContent}</div>
+                    <div class="member-name" style="color:${pid===hostId?'#ed4245':'#dcddde'};font-weight:500;">${userData.nick}</div>
+                    <div class="member-ping">${userData.ping}ms</div>
                 `;
                 ml.appendChild(d);
                 
                 // Voice list - FIXED LAYOUT
-                if(peersData[pid].inVoice) {
+                if(userData.inVoice) {
                     const v = document.createElement('div'); 
                     v.className = 'voice-user';
                     
                     let icons = '';
-                    if(peersData[pid].isMuted) icons += '<i class="fas fa-microphone-slash" style="color: #ed4245;"></i>';
-                    if(peersData[pid].isDeaf) icons += '<i class="fas fa-deaf" style="color: #ed4245; margin-left: 2px;"></i>';
+                    if(userData.isMuted) icons += '<i class="fas fa-microphone-slash" style="color: #ed4245;"></i>';
+                    if(userData.isDeaf) icons += '<i class="fas fa-deaf" style="color: #ed4245; margin-left: 2px;"></i>';
                     
                     v.innerHTML = `
                         <div class="voice-user-info">
-                            <div class="mini-avatar voice-avatar-${pid}"></div>
-                            <div class="voice-user-name">${peersData[pid].nick}</div>
+                            <div class="mini-avatar voice-avatar-${pid}">${avatarContent}</div>
+                            <div class="voice-user-name">${userData.nick}</div>
                         </div>
                         <div class="voice-user-controls">
-                            <div style="font-size: 10px; color: var(--text-muted);">${peersData[pid].ping}ms</div>
+                            <div style="font-size: 10px; color: var(--text-muted);">${userData.ping}ms</div>
                             ${icons}
-                            ${peersData[pid].isSharing ? `<div class="live-badge" onclick="openStage('${pid}')">LIVE</div>` : ''}
+                            ${userData.isSharing ? `<div class="live-badge" onclick="openStage('${pid}')">LIVE</div>` : ''}
                         </div>
+                        ${createVolumeControl(pid)}
                     `;
                     vl.appendChild(v);
                 }
