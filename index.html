@@ -170,9 +170,30 @@
         }
         .server-icon:hover, .server-icon.active { border-radius: 16px; background: var(--brand); color: white; }
         .server-icon.add-btn { color: var(--success); background: var(--bg-primary); }
+        .server-icon.lock-btn { color: var(--danger); background: var(--bg-primary); }
 
         .channels-sidebar { width: 240px; background: var(--bg-secondary); display: flex; flex-direction: column; z-index: 4; }
-        .server-header { height: 48px; padding: 0 16px; display: flex; align-items: center; font-weight: bold; box-shadow: 0 1px 0 rgba(0,0,0,0.2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .server-header { 
+            height: 48px; 
+            padding: 0 16px; 
+            display: flex; 
+            align-items: center; 
+            font-weight: bold; 
+            box-shadow: 0 1px 0 rgba(0,0,0,0.2); 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis;
+            position: relative;
+        }
+        .server-status {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-left: 8px;
+            font-weight: normal;
+        }
+        .server-status.locked {
+            color: var(--danger);
+        }
         
         .channel-list { flex: 1; padding: 10px 8px; overflow-y: auto; }
         .category { font-size: 12px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; margin: 15px 0 5px 10px; }
@@ -373,6 +394,7 @@
             <div class="server-icon active"><i class="fab fa-discord"></i></div>
             <div style="height: 2px; width: 32px; background: #36393f;"></div>
             <div class="server-icon add-btn" onclick="openServerModal()"><i class="fas fa-plus"></i></div>
+            <div class="server-icon lock-btn" id="lock-server-btn" onclick="toggleServerLock()" style="display: none;" title="Toggle Server Lock"><i class="fas fa-lock"></i></div>
         </div>
 
         <div class="channels-sidebar">
@@ -464,6 +486,9 @@
         let isDeaf = false;
         let pingInterval = null;
         let lastPingTimes = {};
+        
+        // Server lock
+        let isServerLocked = false;
 
         // --- STYLE LOGIC ---
         function toggleStyleMenu() {
@@ -551,6 +576,8 @@
                     connectToHost();
                     startPingLoop();
                 } else { 
+                    // Show lock button for host
+                    document.getElementById('lock-server-btn').style.display = 'flex';
                     updateUI(); 
                     addSysMsg(`Server "${rawName}" created.`); 
                     // Host also starts ping loop to measure client pings
@@ -563,10 +590,14 @@
                 
                 switch(err.type) {
                     case 'unavailable-id':
-                        errorMessage = "Server name is already taken! Please choose a different name.";
+                        errorMessage = "Server with this name already exists! Please choose a different name.";
                         break;
                     case 'peer-unavailable':
-                        errorMessage = "Cannot connect to server. The server may be offline or the name is incorrect.";
+                        if(isHost) {
+                            errorMessage = "Cannot create server. The server name might be already taken or there's a network issue.";
+                        } else {
+                            errorMessage = "Cannot connect to server. The server may be offline, the name is incorrect, or the server is locked.";
+                        }
                         break;
                     case 'network':
                         errorMessage = "Network error. Please check your internet connection.";
@@ -586,6 +617,10 @@
                 
                 console.error("PeerJS Error:", err);
                 alert(errorMessage);
+                
+                // Reset state on error
+                isHost = false;
+                hostId = null;
             });
 
             peer.on('connection', handleConn);
@@ -593,6 +628,12 @@
         }
 
         function connectToHost() {
+            // Check if server is locked before connecting
+            if(isServerLocked && !isHost) {
+                alert("Server is locked. Cannot join at this time.");
+                return;
+            }
+            
             const conn = peer.connect(hostId, { metadata: { nick: myNick } });
             handleConn(conn);
             conn.on('close', () => {
@@ -601,6 +642,44 @@
                     location.reload();
                 }
             });
+        }
+
+        // --- SERVER LOCK FUNCTIONALITY ---
+        function toggleServerLock() {
+            if(!isHost) return;
+            
+            isServerLocked = !isServerLocked;
+            updateServerLockUI();
+            
+            if(isServerLocked) {
+                addSysMsg("Server locked. New users cannot join.");
+            } else {
+                addSysMsg("Server unlocked. New users can join.");
+            }
+            
+            // Broadcast lock status to all clients
+            broadcastSync();
+        }
+
+        function updateServerLockUI() {
+            const lockBtn = document.getElementById('lock-server-btn');
+            const serverHeader = document.getElementById('server-name-ui');
+            
+            if(isServerLocked) {
+                lockBtn.innerHTML = '<i class="fas fa-lock-open"></i>';
+                lockBtn.title = "Unlock Server";
+                lockBtn.style.color = 'var(--success)';
+                // Update server header to show lock status
+                if(!serverHeader.innerHTML.includes('<span class="server-status locked">[LOCKED]</span>')) {
+                    serverHeader.innerHTML += '<span class="server-status locked">[LOCKED]</span>';
+                }
+            } else {
+                lockBtn.innerHTML = '<i class="fas fa-lock"></i>';
+                lockBtn.title = "Lock Server";
+                lockBtn.style.color = 'var(--danger)';
+                // Remove lock status from server header
+                serverHeader.innerHTML = serverHeader.innerHTML.replace('<span class="server-status locked">[LOCKED]</span>', '');
+            }
         }
 
         // --- PING SYSTEM FIXED ---
@@ -640,12 +719,19 @@
 
         // --- DATA LAYER FIXED ---
         function handleConn(conn) {
+            // Check if server is locked before accepting new connections
+            if(isHost && isServerLocked) {
+                conn.close();
+                return;
+            }
+            
             connections[conn.peer] = conn;
             conn.on('open', () => {
                 if(isHost) {
                     // Send existing history and current state to new user
                     conn.send({ type: 'history-sync', payload: chatHistory });
                     conn.send({ type: 'sync', payload: peersData });
+                    conn.send({ type: 'server-lock', locked: isServerLocked });
                     
                     peersData[conn.peer] = { 
                         nick: conn.metadata.nick || "Guest", 
@@ -728,6 +814,10 @@
                             updateUI();
                         }
                     }
+                    if(data.type === 'server-lock') {
+                        isServerLocked = data.locked;
+                        updateServerLockUI();
+                    }
                 } catch (error) {
                     console.error('Error processing data:', error);
                 }
@@ -772,6 +862,7 @@
                 if(c.open) {
                     try {
                         c.send({ type: 'sync', payload: peersData });
+                        c.send({ type: 'server-lock', locked: isServerLocked });
                     } catch (error) {
                         console.error('Sync broadcast error:', error);
                     }
