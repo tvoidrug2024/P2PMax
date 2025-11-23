@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P2P MAX ULTIMATE v2.55</title>
+    <title>P2P MAX ULTIMATE v2.5</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
@@ -56,10 +56,9 @@
         /* === MINECRAFT MODE FIXED === */
         body.minecraft-mode {
             font-family: 'VT323', monospace;
-            font-size: 22px; /* Чуть крупнее для пиксельного шрифта */
+            font-size: 22px;
         }
         
-        /* Background - Dirt Texture */
         body.minecraft-mode #app-container {
             background-color: #38261a;
             background-image: 
@@ -69,18 +68,16 @@
             background-position: 0 0, 20px 20px;
         }
 
-        /* Sidebars - Stone Texture */
         body.minecraft-mode .server-sidebar, 
         body.minecraft-mode .channels-sidebar,
         body.minecraft-mode .members-sidebar {
             background: #757575;
             border: 4px solid #000;
             box-shadow: inset -4px -4px 0px #3d3d3d, inset 4px 4px 0px #9e9e9e;
-            color: #ffffff !important; /* Force White Text */
-            text-shadow: 2px 2px 0 #000; /* Shadow for readability */
+            color: #ffffff !important;
+            text-shadow: 2px 2px 0 #000;
         }
 
-        /* Fix Sidebar Text Visibility */
         body.minecraft-mode .server-name-ui,
         body.minecraft-mode .category,
         body.minecraft-mode .channel-item,
@@ -93,15 +90,13 @@
             opacity: 1 !important;
         }
         
-        body.minecraft-mode .ping-display span { color: #55ff55 !important; } /* Bright Green Ping */
+        body.minecraft-mode .ping-display span { color: #55ff55 !important; }
 
-        /* Chat Area */
         body.minecraft-mode .chat-area {
-            background: #212121; /* Obsidian/Dark Stone */
+            background: #212121;
             border: 4px solid #000;
         }
         
-        /* Buttons Fixed */
         body.minecraft-mode .btn, 
         body.minecraft-mode .panel-btn,
         body.minecraft-mode .server-icon {
@@ -113,16 +108,14 @@
             text-shadow: 2px 2px 0 #000;
         }
         
-        /* Button Colors in MC Mode */
         body.minecraft-mode .btn-brand { background: #5865f2; } 
         body.minecraft-mode .btn-success { background: #3ba55c; }
         body.minecraft-mode .btn-danger { background: #ed4245; }
         
-        /* Hover Fixes */
         body.minecraft-mode .channel-item:hover,
         body.minecraft-mode .member-card:hover {
             background: rgba(0,0,0,0.3);
-            color: #ffff55 !important; /* Yellow text on hover */
+            color: #ffff55 !important;
         }
         body.minecraft-mode .channel-item.active {
             background: #3ba55c;
@@ -131,7 +124,6 @@
             box-shadow: inset 2px 2px 0 rgba(255,255,255,0.4);
         }
 
-        /* Inputs */
         body.minecraft-mode .input-box {
             background: #000;
             border: 2px solid #fff;
@@ -207,6 +199,8 @@
         .panel-icons { display: flex; gap: 5px; }
         .panel-btn { width: 32px; height: 32px; display: flex; justify-content: center; align-items: center; border-radius: 4px; cursor: pointer; position: relative; user-select: none; }
         .panel-btn:hover { background: #3f4147; }
+        .panel-btn.active { color: var(--brand); }
+        .panel-btn.muted { color: var(--danger); }
         
         /* Chat Messages */
         .chat-area { flex: 1; display: flex; flex-direction: column; position: relative; background: var(--bg-primary); z-index: 1; }
@@ -247,6 +241,7 @@
         .members-sidebar { width: 240px; background: var(--bg-secondary); padding: 20px 10px; overflow-y: auto; z-index: 4; }
         .member-card { display: flex; align-items: center; gap: 10px; padding: 6px; border-radius: 4px; cursor: pointer; opacity: 0.9; }
         .member-card:hover { background: var(--bg-primary); opacity: 1; }
+        .member-ping { font-size: 10px; color: var(--text-muted); margin-left: auto; padding-right: 5px; }
 
         /* === MEDIA STREAMS === */
         #stream-holder { display: none; } 
@@ -268,6 +263,10 @@
     <audio id="sfx-leave" src="data:audio/mp3;base64,SUQzBAAAAAAAI1RTS1QAAAAOAAADTGF2ZjU4LjI5LjEwMAAAAAAAAAAAAAAA//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"></audio>
     <audio id="sfx-mic-on" src="data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAAABmYWN0BAAAAAAAAABkYXRhAAAAAA=="></audio>
     <audio id="sfx-mic-off" src="data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAAABmYWN0BAAAAAAAAABkYXRhAAAAAA=="></audio>
+    <audio id="sfx-deaf-on" src="data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAAABmYWN0BAAAAAAAAABkYXRhAAAAAA=="></audio>
+    <audio id="sfx-deaf-off" src="data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAAABmYWN0BAAAAAAAAABkYXRhAAAAAA=="></audio>
+    <audio id="sfx-user-join" src="data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAAABmYWN0BAAAAAAAAABkYXRhAAAAAA=="></audio>
+    <audio id="sfx-user-leave" src="data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAAABmYWN0BAAAAAAAAABkYXRhAAAAAA=="></audio>
 
     <div class="modal-overlay" id="nick-modal">
         <div class="modal-box">
@@ -324,6 +323,7 @@
                         </div>
                     </div>
 
+                    <div class="panel-btn" id="deaf-btn" onclick="toggleDeaf()" title="Toggle Deaf"><i class="fas fa-deaf"></i></div>
                     <div class="panel-btn" onclick="toggleMic()"><i class="fas fa-microphone" id="mic-icon"></i></div>
                     <div class="panel-btn" onclick="toggleScreen()"><i class="fas fa-desktop" id="screen-icon"></i></div>
                     <div class="panel-btn" id="disconnect-btn" onclick="leaveVoice()" style="color: #ed4245; display: none;"><i class="fas fa-phone-slash"></i></div>
@@ -368,7 +368,7 @@
         // --- VARIABLES ---
         let peer, myId, myNick, hostId, isHost = false;
         let connections = {};
-        let peersData = {}; // { id: { nick, inVoice, isSharing, isMuted } }
+        let peersData = {}; // { id: { nick, inVoice, isSharing, isMuted, isDeaf, ping } }
         
         let currentChannel = 'general';
         let chatHistory = { general: [], memes: [] };
@@ -379,13 +379,15 @@
         let activeCalls = {};
         let snowInterval = null;
         let effectTimer = null;
+        let isDeaf = false;
+        let pingInterval = null;
 
-        // --- STYLE LOGIC (New Menu) ---
+        // --- STYLE LOGIC ---
         function toggleStyleMenu() {
             const menu = document.getElementById('style-menu');
             menu.classList.toggle('open');
         }
-        // Close menu if clicking outside
+        
         document.addEventListener('click', (e) => {
             const wrapper = document.querySelector('.style-menu-wrapper');
             if (!wrapper.contains(e.target)) {
@@ -425,7 +427,6 @@
             document.getElementById('my-nick-ui').innerText = myNick;
             document.getElementById('nick-modal').style.display = 'none';
             
-            // Setup Emojis
             const emojis = ["😀","😂","😍","😎","😭","😡","👍","👎","🔥","💩","❤️","🤡","👻","💀","👀"];
             const p = document.getElementById('emoji-picker');
             emojis.forEach(e => {
@@ -439,7 +440,6 @@
         function openServerModal() { document.getElementById('server-modal').style.display = 'flex'; }
         function closeServerModal() { document.getElementById('server-modal').style.display = 'none'; }
 
-        // === РАБОЧИЙ КОД ПОДКЛЮЧЕНИЯ ИЗ v2 ===
         function handleServer(create) {
             const rawName = document.getElementById('server-input').value.trim();
             if(!rawName) return;
@@ -455,15 +455,52 @@
                 myId = id;
                 document.getElementById('server-name-ui').innerText = rawName;
                 closeServerModal();
-                peersData[myId] = { nick: myNick, inVoice: false, isSharing: false, isMuted: false };
+                peersData[myId] = { 
+                    nick: myNick, 
+                    inVoice: false, 
+                    isSharing: false, 
+                    isMuted: false,
+                    isDeaf: false,
+                    ping: 0
+                };
                 
-                if(!isHost) connectToHost();
-                else { updateUI(); addSysMsg(`Server "${rawName}" created.`); }
+                if(!isHost) {
+                    connectToHost();
+                    startPingLoop();
+                } else { 
+                    updateUI(); 
+                    addSysMsg(`Server "${rawName}" created.`); 
+                }
             });
 
             peer.on('error', (err) => {
-                if(err.type === 'unavailable-id') alert("Server name taken!");
-                else alert("Error: " + err.type);
+                let errorMessage = "Unknown error occurred";
+                
+                switch(err.type) {
+                    case 'unavailable-id':
+                        errorMessage = "Server name is already taken! Please choose a different name.";
+                        break;
+                    case 'peer-unavailable':
+                        errorMessage = "Cannot connect to server. The server may be offline or the name is incorrect.";
+                        break;
+                    case 'network':
+                        errorMessage = "Network error. Please check your internet connection.";
+                        break;
+                    case 'browser-incompatible':
+                        errorMessage = "Your browser doesn't support WebRTC. Please use a modern browser like Chrome, Firefox, or Edge.";
+                        break;
+                    case 'disconnected':
+                        errorMessage = "Lost connection to PeerJS server. Trying to reconnect...";
+                        break;
+                    case 'ssl-unavailable':
+                        errorMessage = "SSL is required but not available. Please use HTTPS.";
+                        break;
+                    default:
+                        errorMessage = `Connection error: ${err.type}. Please try again.`;
+                }
+                
+                console.error("PeerJS Error:", err);
+                alert(errorMessage);
             });
 
             peer.on('connection', handleConn);
@@ -473,7 +510,6 @@
         function connectToHost() {
             const conn = peer.connect(hostId, { metadata: { nick: myNick } });
             handleConn(conn);
-            // Host Kick Logic check
             conn.on('close', () => {
                 if(conn.peer === hostId) {
                     alert("Host disconnected! Server closed.");
@@ -482,25 +518,48 @@
             });
         }
 
+        // --- PING SYSTEM ---
+        function startPingLoop() {
+            pingInterval = setInterval(() => {
+                if(connections[hostId] && connections[hostId].open) {
+                    connections[hostId].send({ type: 'ping', time: Date.now(), id: myId });
+                }
+            }, 2000);
+        }
+
+        function updatePing(pid, ping) {
+            if(peersData[pid]) {
+                peersData[pid].ping = ping;
+                updateUI();
+            }
+        }
+
         // --- DATA LAYER ---
         function handleConn(conn) {
             connections[conn.peer] = conn;
             conn.on('open', () => {
                 if(isHost) {
-                    // Send existing history to new user
                     conn.send({ type: 'history-sync', payload: chatHistory });
-                    
-                    peersData[conn.peer] = { nick: conn.metadata.nick || "Guest", inVoice: false, isSharing: false, isMuted: false };
+                    peersData[conn.peer] = { 
+                        nick: conn.metadata.nick || "Guest", 
+                        inVoice: false, 
+                        isSharing: false, 
+                        isMuted: false,
+                        isDeaf: false,
+                        ping: 0
+                    };
                     broadcastSync();
                     relayChat({ type: 'chat', channel: 'general', text: `${peersData[conn.peer].nick} joined.`, isSys: true, id: Date.now() });
                 }
             });
             conn.on('data', (data) => {
-                if(data.type === 'sync') { peersData = data.payload; updateUI(); }
-                if(data.type === 'history-sync') {
-                    // Merge history
-                    chatHistory = data.payload;
-                    switchChannel(currentChannel);
+                if(data.type === 'sync') { 
+                    peersData = data.payload; 
+                    updateUI(); 
+                }
+                if(data.type === 'history-sync') { 
+                    chatHistory = data.payload; 
+                    switchChannel(currentChannel); 
                 }
                 if(data.type === 'chat') {
                     if(isHost) broadcast(data, conn.peer);
@@ -512,15 +571,25 @@
                 }
                 if(data.type === 'voice-update') {
                     if(peersData[data.id]) {
+                        // Play sound when user joins/leaves voice if we're in voice
+                        if(peersData[myId].inVoice && data.id !== myId) {
+                            if(data.payload.inVoice && !peersData[data.id].inVoice) {
+                                playSound('user-join');
+                            } else if(!data.payload.inVoice && peersData[data.id].inVoice) {
+                                playSound('user-leave');
+                            }
+                        }
+                        
                         Object.assign(peersData[data.id], data.payload);
                         if(isHost) broadcastSync();
                         updateUI();
                         if(localStream && data.payload.inVoice && data.id !== myId && !activeCalls[data.id]) callPeer(data.id);
                     }
                 }
-                // Ping (from v2.5)
                 if(data.type === 'ping') {
-                    conn.send({ type: 'pong', time: data.time });
+                    if(isHost) {
+                        conn.send({ type: 'pong', time: data.time, id: data.id });
+                    }
                 }
                 if(data.type === 'pong') {
                     const ms = Date.now() - data.time;
@@ -528,29 +597,47 @@
                     if(ms < 100) document.getElementById('ping-ms').style.color = 'var(--success)';
                     else if(ms < 300) document.getElementById('ping-ms').style.color = 'orange';
                     else document.getElementById('ping-ms').style.color = 'var(--danger)';
+                    
+                    if(isHost && data.id) {
+                        updatePing(data.id, ms);
+                    }
                 }
             });
             conn.on('close', () => {
                 if(peersData[conn.peer]) {
                     const n = peersData[conn.peer].nick;
-                    delete peersData[conn.peer]; delete connections[conn.peer];
-                    if(isHost) { broadcastSync(); relayChat({ type: 'chat', channel: 'general', text: `${n} left.`, isSys: true, id: Date.now() }); }
-                    updateUI(); removeVideo(conn.peer);
+                    // Play leave sound if we're in voice and user was in voice
+                    if(peersData[myId].inVoice && peersData[conn.peer].inVoice) {
+                        playSound('user-leave');
+                    }
+                    delete peersData[conn.peer]; 
+                    delete connections[conn.peer];
+                    if(isHost) { 
+                        broadcastSync(); 
+                        relayChat({ type: 'chat', channel: 'general', text: `${n} left.`, isSys: true, id: Date.now() }); 
+                    }
+                    updateUI(); 
+                    removeVideo(conn.peer);
                 }
             });
         }
 
-        function broadcast(msg, ex) { Object.values(connections).forEach(c => { if(c.peer !== ex && c.open) c.send(msg); }); }
-        function broadcastSync() { Object.values(connections).forEach(c => { if(c.open) c.send({ type: 'sync', payload: peersData }); }); updateUI(); }
-        function relayChat(msg) { receiveChat(msg); broadcast(msg); }
-
-        // --- PING LOOP ---
-        function startPingLoop() {
-            setInterval(() => {
-                if(connections[hostId] && connections[hostId].open) {
-                    connections[hostId].send({ type: 'ping', time: Date.now() });
-                }
-            }, 2000);
+        function broadcast(msg, ex) { 
+            Object.values(connections).forEach(c => { 
+                if(c.peer !== ex && c.open) c.send(msg); 
+            }); 
+        }
+        
+        function broadcastSync() { 
+            Object.values(connections).forEach(c => { 
+                if(c.open) c.send({ type: 'sync', payload: peersData }); 
+            }); 
+            updateUI(); 
+        }
+        
+        function relayChat(msg) { 
+            receiveChat(msg); 
+            broadcast(msg); 
         }
 
         // --- CHAT LOGIC ---
@@ -584,10 +671,7 @@
                     else if(msg.ftype.startsWith('audio')) content += `<audio src="${msg.file}" controls></audio>`;
                     else content += `<a href="${msg.file}" download="${msg.fname}" style="color:#00b0f4;display:block;margin-top:5px;">Download ${msg.fname}</a>`;
                 }
-
-                // Delete button for own messages
                 const deleteBtn = (msg.sender === myId) ? `<div class="delete-btn" onclick="requestDelete('${msg.id}', '${msg.channel}')"><i class="fas fa-trash"></i></div>` : '';
-
                 div.innerHTML = `
                     <div class="msg-avatar" style="background:${msg.sender===myId?'var(--brand)':'gray'}"></div>
                     <div style="flex:1;">
@@ -610,37 +694,38 @@
             if(chatHistory[currentChannel]) chatHistory[currentChannel].forEach(renderMsg);
         }
 
-        // DELETE MESSAGE LOGIC
         function requestDelete(id, channel) {
             if(!confirm("Delete this message?")) return;
             const msg = { type: 'delete-msg', id, channel };
             deleteMsgLocally(id, channel);
             if(isHost) broadcast(msg); else if(connections[hostId]) connections[hostId].send(msg);
         }
+        
         function deleteMsgLocally(id, channel) {
             const el = document.getElementById(`msg-${id}`);
             if(el) el.remove();
-            // Remove from history array
             chatHistory[channel] = chatHistory[channel].filter(m => m.id != id);
         }
 
-        // INPUT & PASTE
         document.getElementById('msg-input').addEventListener('keypress', e => {
             if(e.key === 'Enter' && e.target.value.trim()) {
                 sendText(e.target.value); e.target.value = '';
             }
         });
+        
         document.getElementById('msg-input').addEventListener('paste', e => {
             const items = e.clipboardData.items;
             for(let i=0; i<items.length; i++) {
                 if(items[i].kind === 'file') sendFile(items[i].getAsFile());
             }
         });
+        
         function sendText(txt) {
             const msg = { type: 'chat', channel: currentChannel, text: txt, sender: myId, nick: myNick, time: Date.now(), id: Date.now()+Math.random() };
             relayChat(msg);
             if(!isHost && connections[hostId]) connections[hostId].send(msg);
         }
+        
         function sendFile(f) {
             if(!f || f.size > 5000000) return alert("File too large (>5MB)");
             const r = new FileReader();
@@ -651,9 +736,12 @@
             };
             r.readAsDataURL(f);
         }
-        function addSysMsg(text) { receiveChat({ type: 'chat', channel: currentChannel, text, isSys: true, id: Date.now() }); }
+        
+        function addSysMsg(text) { 
+            receiveChat({ type: 'chat', channel: currentChannel, text, isSys: true, id: Date.now() }); 
+        }
 
-        // --- VOICE ---
+        // --- VOICE & AUDIO CONTROL ---
         async function toggleVoice() {
             if(!localStream) {
                 try {
@@ -664,10 +752,15 @@
                     peersData[myId].inVoice = true;
                     setupAudioMonitor(localStream, myId);
                     sendVoiceState();
-                    Object.keys(peersData).forEach(pid => { if(pid!==myId && peersData[pid].inVoice) callPeer(pid); });
-                } catch(e) { alert("Mic Access Denied"); }
+                    Object.keys(peersData).forEach(pid => { 
+                        if(pid!==myId && peersData[pid].inVoice) callPeer(pid); 
+                    });
+                } catch(e) { 
+                    alert("Microphone access denied. Please allow microphone permissions."); 
+                }
             }
         }
+        
         function leaveVoice() {
             if(!localStream) return;
             playSound('leave');
@@ -678,9 +771,15 @@
             document.getElementById('stream-holder').querySelectorAll('.remote-vid').forEach(e=>e.remove());
             document.getElementById('disconnect-btn').style.display = 'none';
             closeStage();
-            peersData[myId].inVoice = false; peersData[myId].isSharing = false;
+            peersData[myId].inVoice = false; 
+            peersData[myId].isSharing = false;
+            peersData[myId].isMuted = false;
+            peersData[myId].isDeaf = false;
+            isDeaf = false;
+            updateDeafButton();
             sendVoiceState();
         }
+        
         async function toggleScreen() {
             if(!localStream) return alert("Join Voice First");
             if(!isSharing) {
@@ -690,35 +789,59 @@
                     const combined = new MediaStream([localStream.getAudioTracks()[0], screenStream.getVideoTracks()[0]]);
                     refreshCalls(combined);
                     screenStream.getVideoTracks()[0].onended = toggleScreen;
-                    peersData[myId].isSharing = true; sendVoiceState();
-                } catch(e) { isSharing = false; }
+                    peersData[myId].isSharing = true; 
+                    sendVoiceState();
+                } catch(e) { 
+                    isSharing = false; 
+                }
             } else {
                 isSharing = false;
                 if(screenStream) screenStream.getTracks().forEach(t=>t.stop());
                 refreshCalls(localStream);
-                peersData[myId].isSharing = false; sendVoiceState();
+                peersData[myId].isSharing = false; 
+                sendVoiceState();
             }
         }
+        
         function refreshCalls(s) {
-            Object.values(activeCalls).forEach(c=>c.close()); activeCalls={};
-            setTimeout(() => { Object.keys(peersData).forEach(pid => { if(pid!==myId && peersData[pid].inVoice) callPeer(pid); }); }, 500);
+            Object.values(activeCalls).forEach(c=>c.close()); 
+            activeCalls={};
+            setTimeout(() => { 
+                Object.keys(peersData).forEach(pid => { 
+                    if(pid!==myId && peersData[pid].inVoice) callPeer(pid); 
+                }); 
+            }, 500);
         }
+        
         function callPeer(pid) {
             if(activeCalls[pid]) return;
-            const s = (isSharing && screenStream) ? new MediaStream([localStream.getAudioTracks()[0], screenStream.getVideoTracks()[0]]) : localStream;
+            const s = (isSharing && screenStream) ? 
+                new MediaStream([localStream.getAudioTracks()[0], screenStream.getVideoTracks()[0]]) : localStream;
             const call = peer.call(pid, s);
             handleCall(call);
         }
+        
         function handleCall(call) {
             activeCalls[call.peer] = call;
             if(localStream) call.answer(localStream);
-            call.on('stream', s => { addVideo(call.peer, s); setupAudioMonitor(s, call.peer); });
+            call.on('stream', s => { 
+                addVideo(call.peer, s); 
+                setupAudioMonitor(s, call.peer); 
+                // Mute audio if deaf
+                if(isDeaf) {
+                    const videoEl = document.getElementById('vid-'+call.peer);
+                    if(videoEl) videoEl.muted = true;
+                }
+            });
             call.on('close', () => removeVideo(call.peer));
         }
+        
         function setupAudioMonitor(stream, pid) {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
             const src = ctx.createMediaStreamSource(stream);
-            const anl = ctx.createAnalyser(); src.connect(anl); anl.fftSize = 64;
+            const anl = ctx.createAnalyser(); 
+            src.connect(anl); 
+            anl.fftSize = 64;
             const data = new Uint8Array(anl.frequencyBinCount);
             const loop = () => {
                 if(!peersData[pid] || !peersData[pid].inVoice) return;
@@ -726,40 +849,143 @@
                 let sum=0; for(let i=0; i<data.length; i++) sum+=data[i];
                 const vol = sum/data.length;
                 document.querySelectorAll(`.voice-avatar-${pid}`).forEach(el => {
-                    if(vol > 10 && !peersData[pid].isMuted) el.classList.add('speaking'); else el.classList.remove('speaking');
+                    if(vol > 10 && !peersData[pid].isMuted && !peersData[pid].isDeaf) 
+                        el.classList.add('speaking'); 
+                    else 
+                        el.classList.remove('speaking');
                 });
                 requestAnimationFrame(loop);
-            }; loop();
+            }; 
+            loop();
         }
+        
         function sendVoiceState() {
-            const msg = { type: 'voice-update', id: myId, payload: { inVoice: peersData[myId].inVoice, isSharing: peersData[myId].isSharing, isMuted: peersData[myId].isMuted } };
-            if(isHost) broadcastSync(); else if(connections[hostId]) connections[hostId].send(msg);
+            const msg = { 
+                type: 'voice-update', 
+                id: myId, 
+                payload: { 
+                    inVoice: peersData[myId].inVoice, 
+                    isSharing: peersData[myId].isSharing, 
+                    isMuted: peersData[myId].isMuted,
+                    isDeaf: peersData[myId].isDeaf
+                } 
+            };
+            if(isHost) broadcastSync(); 
+            else if(connections[hostId]) connections[hostId].send(msg);
             updateUI();
         }
+        
         function addVideo(pid, s) {
-            if(document.getElementById('vid-'+pid)) return; playSound('join');
-            const v = document.createElement('video'); v.id = 'vid-'+pid; v.className = 'remote-vid'; v.autoplay = true; v.srcObject = s;
+            if(document.getElementById('vid-'+pid)) return; 
+            if(peersData[myId].inVoice) playSound('user-join');
+            const v = document.createElement('video'); 
+            v.id = 'vid-'+pid; 
+            v.className = 'remote-vid'; 
+            v.autoplay = true; 
+            v.srcObject = s;
+            // Mute if deaf
+            if(isDeaf) v.muted = true;
             document.getElementById('stream-holder').appendChild(v);
         }
+        
         function removeVideo(pid) {
-            const v = document.getElementById('vid-'+pid); if(v) { v.remove(); playSound('leave'); }
+            const v = document.getElementById('vid-'+pid); 
+            if(v) { 
+                v.remove(); 
+                if(peersData[myId].inVoice) playSound('user-leave'); 
+            }
             if(document.getElementById('stage-video').getAttribute('data-peer') === pid) closeStage();
         }
+        
+        // --- DEAF FUNCTIONALITY ---
+        function toggleDeaf() {
+            isDeaf = !isDeaf;
+            peersData[myId].isDeaf = isDeaf;
+            
+            // Mute all remote audio
+            document.querySelectorAll('.remote-vid').forEach(video => {
+                video.muted = isDeaf;
+            });
+            
+            // Auto-mute mic when deafening
+            if(isDeaf && localStream) {
+                const audioTrack = localStream.getAudioTracks()[0];
+                if(audioTrack.enabled) {
+                    audioTrack.enabled = false;
+                    peersData[myId].isMuted = true;
+                    updateMicIcon(false);
+                    playSound('mic-off');
+                }
+            }
+            
+            updateDeafButton();
+            sendVoiceState();
+            playSound(isDeaf ? 'deaf-on' : 'deaf-off');
+        }
+        
+        function updateDeafButton() {
+            const deafBtn = document.getElementById('deaf-btn');
+            if(isDeaf) {
+                deafBtn.classList.add('muted');
+                deafBtn.style.color = 'var(--danger)';
+            } else {
+                deafBtn.classList.remove('muted');
+                deafBtn.style.color = 'white';
+            }
+        }
+        
+        function toggleMic() {
+            if(localStream) {
+                const t = localStream.getAudioTracks()[0];
+                t.enabled = !t.enabled;
+                peersData[myId].isMuted = !t.enabled;
+                playSound(t.enabled ? 'mic-on' : 'mic-off');
+                document.getElementById('mic-icon').className = t.enabled ? 'fas fa-microphone' : 'fas fa-microphone-slash';
+                document.getElementById('mic-icon').style.color = t.enabled ? 'white' : '#ed4245';
+                sendVoiceState();
+            }
+        }
+        
         function updateUI() {
-            const ml = document.getElementById('members-list'); ml.innerHTML = '';
-            const vl = document.getElementById('voice-list-ui'); vl.innerHTML = '';
+            const ml = document.getElementById('members-list'); 
+            ml.innerHTML = '';
+            const vl = document.getElementById('voice-list-ui'); 
+            vl.innerHTML = '';
+            
             Object.keys(peersData).forEach(pid => {
-                const d = document.createElement('div'); d.className = 'member-card';
-                d.innerHTML = `<div class="my-avatar" style="width:24px;height:24px;background:${pid===myId?'var(--brand)':'gray'}"></div><div style="color:${pid===hostId?'#ed4245':'#dcddde'};font-weight:500;">${peersData[pid].nick}</div>`;
+                // Members list
+                const d = document.createElement('div'); 
+                d.className = 'member-card';
+                d.innerHTML = `
+                    <div class="my-avatar" style="width:24px;height:24px;background:${pid===myId?'var(--brand)':'gray'}"></div>
+                    <div style="color:${pid===hostId?'#ed4245':'#dcddde'};font-weight:500;">${peersData[pid].nick}</div>
+                    <div class="member-ping">${peersData[pid].ping}ms</div>
+                `;
                 ml.appendChild(d);
+                
+                // Voice list
                 if(peersData[pid].inVoice) {
-                    const v = document.createElement('div'); v.className = 'voice-user';
-                    v.innerHTML = `<div class="mini-avatar voice-avatar-${pid}"></div><div>${peersData[pid].nick}</div>${peersData[pid].isMuted ? '<i class="fas fa-microphone-slash mute-icon"></i>' : ''}${peersData[pid].isSharing ? `<div class="live-badge" onclick="openStage('${pid}')">LIVE</div>` : ''}`;
+                    const v = document.createElement('div'); 
+                    v.className = 'voice-user';
+                    let icons = '';
+                    if(peersData[pid].isMuted) icons += '<i class="fas fa-microphone-slash" style="color: #ed4245;"></i>';
+                    if(peersData[pid].isDeaf) icons += '<i class="fas fa-deaf" style="color: #ed4245; margin-left: 5px;"></i>';
+                    
+                    v.innerHTML = `
+                        <div class="mini-avatar voice-avatar-${pid}"></div>
+                        <div>${peersData[pid].nick}</div>
+                        <div style="margin-left: auto; display: flex; align-items: center; gap: 5px;">
+                            <div style="font-size: 10px; color: var(--text-muted);">${peersData[pid].ping}ms</div>
+                            ${icons}
+                            ${peersData[pid].isSharing ? `<div class="live-badge" onclick="openStage('${pid}')">LIVE</div>` : ''}
+                        </div>
+                    `;
                     vl.appendChild(v);
                 }
             });
             document.getElementById('member-count').innerText = Object.keys(peersData).length;
         }
+        
         function openStage(pid) {
             const vid = document.getElementById(pid===myId ? 'local-video' : 'vid-'+pid);
             if(vid && vid.srcObject) {
@@ -768,28 +994,47 @@
                 document.getElementById('stage-overlay').style.display = 'flex';
             }
         }
-        function closeStage() { document.getElementById('stage-overlay').style.display = 'none'; document.getElementById('stage-video').srcObject = null; }
-        function toggleFullScreen() { const el = document.getElementById('stage-video'); if(!document.fullscreenElement) el.requestFullscreen().catch(()=>{}); else document.exitFullscreen(); }
-        function toggleEmoji() { const p = document.getElementById('emoji-picker'); p.style.display = p.style.display==='grid'?'none':'grid'; }
-        function toggleMic() {
-            if(localStream) {
-                const t = localStream.getAudioTracks()[0]; t.enabled = !t.enabled;
-                peersData[myId].isMuted = !t.enabled;
-                if(t.enabled) playSound('mic-on'); else playSound('mic-off');
-                document.getElementById('mic-icon').className = t.enabled ? 'fas fa-microphone' : 'fas fa-microphone-slash';
-                document.getElementById('mic-icon').style.color = t.enabled ? 'white' : '#ed4245';
-                sendVoiceState();
-            }
+        
+        function closeStage() { 
+            document.getElementById('stage-overlay').style.display = 'none'; 
+            document.getElementById('stage-video').srcObject = null; 
         }
+        
+        function toggleFullScreen() { 
+            const el = document.getElementById('stage-video'); 
+            if(!document.fullscreenElement) 
+                el.requestFullscreen().catch(()=>{}); 
+            else 
+                document.exitFullscreen(); 
+        }
+        
+        function toggleEmoji() { 
+            const p = document.getElementById('emoji-picker'); 
+            p.style.display = p.style.display==='grid'?'none':'grid'; 
+        }
+        
         function playSound(t) { 
             let e;
-            if(t==='join') e = document.getElementById('sfx-join');
-            else if(t==='leave') e = document.getElementById('sfx-leave');
-            else if(t==='mic-on') e = document.getElementById('sfx-mic-on');
-            else if(t==='mic-off') e = document.getElementById('sfx-mic-off');
-            if(e) { e.currentTime=0; e.play().catch(()=>{}); } 
+            switch(t) {
+                case 'join': e = document.getElementById('sfx-join'); break;
+                case 'leave': e = document.getElementById('sfx-leave'); break;
+                case 'mic-on': e = document.getElementById('sfx-mic-on'); break;
+                case 'mic-off': e = document.getElementById('sfx-mic-off'); break;
+                case 'deaf-on': e = document.getElementById('sfx-deaf-on'); break;
+                case 'deaf-off': e = document.getElementById('sfx-deaf-off'); break;
+                case 'user-join': e = document.getElementById('sfx-user-join'); break;
+                case 'user-leave': e = document.getElementById('sfx-user-leave'); break;
+            }
+            if(e) { 
+                e.currentTime=0; 
+                e.play().catch(()=>{}); 
+            } 
+        }
+        
+        function updateMicIcon(muted) {
+            document.getElementById('mic-icon').className = muted ? 'fas fa-microphone-slash' : 'fas fa-microphone';
+            document.getElementById('mic-icon').style.color = muted ? '#ed4245' : 'white';
         }
     </script>
 </body>
 </html>
-
